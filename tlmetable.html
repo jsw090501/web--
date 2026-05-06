@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2학년 11반 시간표 - 업그레이드</title>
+
+<style>
+    /* 기본 스타일 정의 */
+    :root {
+        --bg-gradient: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+        --primary-purple: #8e8cd6;
+        --text-color: #333;
+        --time-text-color: #777;
+        --border-radius: 12px;
+        --hover-shadow: 0 10px 20px rgba(0,0,0,0.08);
+        --programming-bg: #e3f2fd;
+        --theory-bg: #e8f5e9;
+        --language-bg: #fff1f1;
+        --etc-bg: #fffde7;
+        --literature-bg: #ffe0b2; /* 문학 과목 배경색 추가 */
+    }
+
+    body {
+        font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+        background: var(--bg-gradient);
+        text-align: center;
+        padding: 40px 20px;
+        margin: 0;
+        color: var(--text-color);
+        display: flex; /* 화면 중앙 정렬 */
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        flex-direction: column;
+    }
+
+    h1 {
+        margin-bottom: 40px;
+        color: var(--primary-purple);
+        font-weight: bold;
+        letter-spacing: -1px;
+    }
+
+    /* 테이블 디자인 개선 (카드 형태) */
+    table {
+        margin: 0 auto;
+        border-collapse: separate; /* 카드형을 위해 분리 */
+        border-spacing: 8px; /* 카드 사이 간격 */
+        width: 100%;
+        max-width: 900px;
+        table-layout: fixed;
+    }
+
+    /* 공통 헤더/본문 스타일 */
+    th, td {
+        padding: 15px;
+        height: 80px;
+        vertical-align: middle;
+        border-radius: var(--border-radius);
+        position: relative; /* 자식 요소 배치를 위해 */
+        transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    }
+
+    /* 요일 헤더 스타일 (짙은 라벤더 캡슐) */
+    th {
+        background: var(--primary-purple);
+        color: white;
+        font-weight: normal;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    /* 교시 열 스타일 (배경색 추가, 중앙 정렬) */
+    td:first-child, th:first-child {
+        width: 15%;
+        background-color: #f0f0f0; /* 교시 열 배경색 추가 */
+        cursor: default;
+        font-weight: bold;
+        color: var(--text-color);
+        text-align: center;
+    }
+
+    /* 시간 정보 스타일 (작고 흐리게) */
+    .time-slot {
+        font-size: 0.8em;
+        font-weight: normal;
+        color: var(--time-text-color);
+        display: block;
+        margin-top: 4px;
+    }
+
+    /* 일반 과목 카드 기본 스타일 */
+    td:not(:first-child) {
+        background: white;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+        cursor: pointer;
+    }
+
+    /* hover 효과: 카드가 떠오름 */
+    td:not(:first-child):not(.today):not(.active):hover {
+        transform: translateY(-5px);
+        box-shadow: var(--hover-shadow);
+        background-color: #fcfcfc !important; /* 미세한 흰색 변경 */
+    }
+
+    /* 클릭 강조 (.active) - 톤다운된 코랄 */
+    .active {
+        background-color: #e59a9a !important; 
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 10px rgba(229,154,154,0.4);
+    }
+    .active .time-slot { color: rgba(255,255,255,0.8); }
+
+    /* 오늘 요일 강조 (.today) - 원본 로직 유지용, 디자인 미지정 */
+    /* .today {...} */
+
+
+    /* 과목 색상 팔레트 (더 부드러운 파스텔) */
+    .programming { background: var(--programming-bg) !important; } /* 아주 연한 파랑 */
+    .theory { background: var(--theory-bg) !important; }      /* 아주 연한 초록 */
+    .language { background: var(--language-bg) !important; }    /* 아주 연한 분홍 */
+    .etc { background: var(--etc-bg) !important; }         /* 아주 연한 노랑 */
+    .literature { background: var(--literature-bg) !important; } /* 문학 과목 배경색 */
+
+    /* 모바일 반응형 */
+    @media (max-width: 768px) {
+        body { padding: 20px 10px; }
+        table { border-spacing: 4px; }
+        td, th { padding: 8px; height: 60px; font-size: 13px; }
+        h1 { font-size: 1.5em; margin-bottom: 20px; }
+        .time-slot { font-size: 0.75em; }
+    }
+</style>
+</head>
+
+<body>
+
+<h1>2학년 11반 시간표</h1>
+
+<table id="timetable">
+<thead>
+    <tr>
+        <th>교시</th>
+        <th>월</th>
+        <th>화</th>
+        <th>수</th>
+        <th>목</th>
+        <th>금</th>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+        <td>1교시<span class="time-slot">(09:00)</span></td>
+        <td class="programming">자료 구조</td>
+        <td class="programming">시스템<br>프로그래밍</td>
+        <td class="programming">시스템<br>프로그래밍</td>
+        <td class="programming">응용<br>프로그래밍 개발</td>
+        <td class="etc">스포츠 문화</td>
+    </tr>
+    <tr>
+        <td>2교시<span class="time-slot">(10:00)</span></td>
+        <td class="programming">응용<br>프로그래밍 개발</td>
+        <td class="theory">한국사1</td>
+        <td class="etc">미술<br>미술실</td>
+        <td class="literature">문학</td>
+        <td class="programming">응용<br>프로그래밍 개발</td>
+    </tr>
+    <tr>
+        <td>3교시<span class="time-slot">(11:00)</span></td>
+        <td class="literature">문학</td>
+        <td class="programming">시스템<br>프로그래밍</td>
+        <td class="programming">응용<br>프로그래밍 개발</td>
+        <td class="programming">시스템<br>프로그래밍</td>
+        <td class="programming">응용<br>프로그래밍 개발</td>
+    </tr>
+    <tr>
+        <td>4교시<span class="time-slot">(12:00)</span></td>
+        <td class="theory">한국사1</td>
+        <td class="programming">응용<br>프로그래밍 개발</td>
+        <td class="programming">응용<br>프로그래밍 개발</td>
+        <td class="programming">시스템<br>프로그래밍</td>
+        <td class="literature">문학</td>
+    </tr>
+    <tr>
+        <td>5교시<span class="time-slot">(13:50)</span></td>
+        <td class="programming">시스템<br>프로그래밍</td>
+        <td class="language">영어1</td>
+        <td class="language">영어1</td>
+        <td class="theory">한국사1</td>
+        <td class="etc">창체</td>
+    </tr>
+    <tr>
+        <td>6교시<span class="time-slot">(14:50)</span></td>
+        <td class="programming">시스템<br>프로그래밍</td>
+        <td class="etc">미술<br>미술실</td>
+        <td class="etc">자율</td>
+        <td class="programming">자료 구조</td>
+        <td class="etc">창체</td>
+    </tr>
+    <tr>
+        <td>7교시<span class="time-slot">(15:50)</span></td>
+        <td class="programming">시스템<br>프로그래밍</td>
+        <td></td>
+        <td></td>
+        <td class="language">영어1</td>
+        <td></td>
+    </tr>
+</tbody>
+</table>
+
+<script>
+    const cells = document.querySelectorAll("td");
+
+    // 클릭 강조
+    cells.forEach(cell => {
+        cell.addEventListener("click", () => {
+            cell.classList.toggle("active");
+        });
+    });
+
+    // 오늘 요일 강조 (원본 로직 유지, 디자인은 제거)
+    const today = new Date().getDay();
+    if (today >= 1 && today <= 5) {
+        const col = today;
+        document.querySelectorAll("#timetable tbody tr").forEach(row => {
+            if (row.children[col]) {
+                row.children[col].classList.add("today");
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
